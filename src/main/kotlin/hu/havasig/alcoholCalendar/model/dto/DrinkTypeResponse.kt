@@ -8,7 +8,7 @@ class DrinkTypeResponse(
 	@JsonProperty("name")
 	var name: String,
 	@JsonProperty("percentage")
-	var percentage: Int,
+	var percentage: Double,
 	@JsonProperty("amount")
 	var amount: Double,
 	@JsonProperty("is_deleted")

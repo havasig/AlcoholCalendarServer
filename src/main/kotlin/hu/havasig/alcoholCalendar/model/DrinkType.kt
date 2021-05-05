@@ -7,9 +7,8 @@ import javax.persistence.*
 @Table(name = "drink_types")
 class DrinkType(
 	var name: String = "",
-	var percentage: Int? = null,
-	var amount: Double? = null,
-	var isDeleted: Boolean = false,
+	var percentage: Double? = null,
+	var amount: Double? = null
 ) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -1,9 +1,8 @@
 package hu.havasig.alcoholCalendar
 
+import hu.havasig.alcoholCalendar.drinkType.DrinkTypeRepository
+import hu.havasig.alcoholCalendar.model.*
 import hu.havasig.alcoholCalendar.model.Dictionary
-import hu.havasig.alcoholCalendar.model.Privilege
-import hu.havasig.alcoholCalendar.model.Role
-import hu.havasig.alcoholCalendar.model.User
 import hu.havasig.alcoholCalendar.security.PrivilegeRepository
 import hu.havasig.alcoholCalendar.security.RoleRepository
 import hu.havasig.alcoholCalendar.user.UserRepository
@@ -28,6 +27,9 @@ class SetupDataLoader : ApplicationListener<ContextRefreshedEvent?> {
 	@Autowired
 	private val privilegeRepository: PrivilegeRepository? = null
 
+	@Autowired
+	private val drinkTypeRepository: DrinkTypeRepository? = null
+
 	@Transactional
 	fun createPrivilegeIfNotFound(name: String): Privilege {
 		var privilege = privilegeRepository!!.findByName(name)
@@ -51,6 +53,21 @@ class SetupDataLoader : ApplicationListener<ContextRefreshedEvent?> {
 		return role
 	}
 
+	@Transactional
+	fun createDrinkTypeIfNotFound(
+		name: String, amount: Double, percentage: Double, owner: User
+	): DrinkType? {
+		var drinkType: DrinkType? = drinkTypeRepository!!.findByName(name)
+		if (drinkType == null) {
+			drinkType = DrinkType(name)
+			drinkType.amount = amount
+			drinkType.percentage = percentage
+			drinkType.user = owner
+			drinkTypeRepository.save(drinkType)
+		}
+		return drinkType
+	}
+
 	override fun onApplicationEvent(event: ContextRefreshedEvent) {
 		if (alreadySetup) return
 		val challengeCreatePrivilege = createPrivilegeIfNotFound(Dictionary.CreateChallengePrivilege)
@@ -67,6 +84,13 @@ class SetupDataLoader : ApplicationListener<ContextRefreshedEvent?> {
 		user.name = "Test"
 		user.roles = mutableListOf(adminRole)
 		userRepository!!.save(user)
+
+		val drinkTypeBeer = createDrinkTypeIfNotFound("Beer", 0.5, 4.0, user)
+		val drinkTypeWine = createDrinkTypeIfNotFound("Wine", 0.2, 12.0, user)
+		val drinkTypeCocktail = createDrinkTypeIfNotFound("Cocktail", 0.3, 18.0, user)
+		val drinkTypeShot = createDrinkTypeIfNotFound("Shot", 0.04, 20.0, user)
+		val drinkTypeSpirit = createDrinkTypeIfNotFound("Spirit", 0.4, 35.0, user)
+
 		alreadySetup = true
 	}
 }

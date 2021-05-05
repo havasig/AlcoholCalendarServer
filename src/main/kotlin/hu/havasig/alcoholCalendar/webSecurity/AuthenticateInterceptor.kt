@@ -11,13 +11,18 @@ import javax.servlet.http.HttpServletResponse
 class LoggerInterceptor(private val userService: UserService) : HandlerInterceptor {
 	override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
 		val userId = request.getHeader("user-id") ?: return false
-		val uuidUserId = UUID.fromString(userId)
-		val exists = userService.exists(uuidUserId)
-		if (!exists) {
-			userService.createUser(uuidUserId)
-			logger.info("User created with id: $userId")
+		return try {
+			val uuidUserId = UUID.fromString(userId)
+			val exists = userService.exists(uuidUserId)
+			if (!exists) {
+				userService.createUser(uuidUserId)
+				logger.info("User created with id: $userId")
+			}
+			true
+		} catch (e: Exception) {
+			e.printStackTrace()
+			false
 		}
-		return true
 	}
 
 	companion object {

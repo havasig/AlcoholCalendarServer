@@ -11,7 +11,7 @@ class DrinkResponse(
 	@JsonProperty("name")
 	var name: String,
 	@JsonProperty("percentage")
-	var percentage: Int? = null,
+	var percentage: Double? = null,
 	@JsonProperty("amount")
 	var amount: Double? = null,
 	@JsonProperty("date")
