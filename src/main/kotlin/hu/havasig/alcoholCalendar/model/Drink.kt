@@ -8,7 +8,7 @@ import javax.persistence.*
 @Table(name = "drinks")
 class Drink(
 	var name: String = "",
-	var percentage: Int? = null,
+	var percentage: Double? = null,
 	var amount: Double? = null,
 	var date: LocalDate? = null
 ) {
